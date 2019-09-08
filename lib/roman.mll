@@ -7,7 +7,7 @@
     ix = 9
     cm = 900
     cd = 400
-    
+
     (c) 2015 Christian Lindig <lindig@gmail.com>. This is licensed
     under the BSD 2-clause license.
     *)
@@ -15,8 +15,8 @@
     exception Error of string
     let error fmt = Printf.kprintf (fun msg -> raise (Error msg)) fmt
 
-    type number = 
-        | Roman     of string 
+    type number =
+        | Roman     of string
         | Decimal   of int
 
     let concat digits = String.concat "" @@ List.rev digits
@@ -39,14 +39,14 @@
     | 0                -> concat digits
     | n                -> error "can't represent %d as a roman' numeral" n
 
-    let as_roman n = roman' [] n 
+    let as_roman n = roman' [] n
 
 }
 
 let decimal = ['0'-'9']+
 let roman   =
     ( "M" | "MM" | "MMM" )? (* could use "M"* to avoid limit *)
-    ( "D"? ( "C" | "CC" | "CCC" )? | "CD" | "CM" )? 
+    ( "D"? ( "C" | "CC" | "CCC" )? | "CD" | "CM" )?
     ( "L"? ( "X" | "XX" | "XXX" )? | "XL" | "XC" )?
     ( "V"? ( "I" | "II" | "III" )? | "IV" | "IX" )?
 
@@ -74,7 +74,7 @@ and digit = parse (* return value of roman digit *)
 and number = parse
     | (roman    as r) eof         { Roman(r)                  }
     | (decimal  as d) eof         { Decimal(int_of_string d)  }
-    | _         
+    | _
         { error "neither roman nor decimal: %s" @@ Lexing.lexeme lexbuf }
 
 {
@@ -82,7 +82,7 @@ and number = parse
 (** [is_wellformed str] is true, iff [str] is a roman numeral.
     [is_wellformed] is case insensitive. *)
 let is_wellformed str =
-    try  syntax @@ Lexing.from_string str 
+    try  syntax @@ Lexing.from_string str
     with Failure _ -> false
 
 (** [roman str] computes the integer value of roman numeral [str]. An
@@ -100,12 +100,46 @@ let roman str =
     is case insensitive and validates the syntax of [str]. In case of an
     error it raises [Error msg]. *)
 let from_roman str =
-    let str = String.uppercase str in
-    if is_wellformed str 
+    let str = String.uppercase_ascii str in
+    if is_wellformed str
     then roman str
     else error "not a roman numeral: %s" str
 
-let scan str = number @@ Lexing.from_string @@ String.uppercase str
-    
+let scan str = number @@ Lexing.from_string @@ String.uppercase_ascii str
+
+
+let%test _ =
+    let syntax =
+        [ "xxxx"
+        ; "im"
+        ; "abc"
+        ; "xcc"
+        ; "ic"
+        ; "imm"
+        ; "mxm"
+        ; "viiii"
+        ; "ivi"
+        ]
+    in
+    let fail str =
+        try
+            ( from_roman str |> ignore
+            ; false
+            )
+        with
+            Error _ -> true
+    in
+    let idem i =
+        let r  = as_roman i  in
+        let i' = from_roman r  in
+        let r' = as_roman i' in
+        r = r' && i = i'
+    in
+    let rec loop = function
+        | 0 -> true
+        | n -> idem n && loop (n-1)
+    in
+    loop 3999 && List.for_all fail syntax
+
 
 }

@@ -1,0 +1,14 @@
+opam-version: "1.2"
+name: "roman"
+version: "0.1"
+maintainer: "Guillaume Huysmans <ghuysmans99@gmail.com>"
+authors: "Christian Lindig <lindig@gmail.com>"
+homepage: "https://github.com/lindig/roman/"
+bug-reports: "https://github.com/lindig/roman/issues"
+dev-repo: "git://github.com/ghuysmans/roman/"
+build: [["dune" "build" "-p" name "-j" jobs]]
+synopsis: "Convert a roman numeral to an integer and vice versa"
+depends: [
+  "dune" {build}
+  "ppx_inline_test"
+]

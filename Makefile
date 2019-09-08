@@ -1,24 +1,12 @@
-#
-#
-
-OCB	= ocamlbuild
-PREFIX	= $(HOME)
-
 all:
-	$(OCB) main.native
-	mv main.native roman
+	dune build
 
-test:	all
-	./roman -test
-	! ./roman xxxx
-	! ./roman im
-	./roman mmxv
-	echo "test passed"
+test:
+	dune runtest
 
 clean:
-	$(OCB) -clean
-	rm -f roman
+	dune clean
 
-install: all
-	install roman $(PREFIX)/bin
-
+install:
+	dune build @install
+	dune install

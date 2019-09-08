@@ -16,8 +16,8 @@ The module accepts the syntax for [modern roman
 numerals](http://en.wikipedia.org/wiki/Roman_numerals) as defined by
 Wikipedia and detects illegal syntax like the following:
 
-    im 
-    xcc  
+    im
+    xcc
     ic
     imm
     mxm
@@ -35,12 +35,11 @@ GitHub](https://github.com/ralfw/TheArchitectsNapkinBlog).
 
     $ make
     $ make test
-    $ make PREFIX=$(HOME) install 
+    $ make install
 
 The implementation is in `roman.mll` and uses ocamllex to build an
-automaton for recognising roman numerals. To use as a module, simply copy
-`roman.mll` and `roman.mli` into your own project. (I didn't bother yet to
-pack it up for Opam.)
+automaton for recognising roman numerals. To use as a module, simply add it as
+an ocamlfind dependency in your own project.
 
 # Syntax
 
