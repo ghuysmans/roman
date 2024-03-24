@@ -2,7 +2,7 @@
 *)
 
 exception Error of string
-let error fmt = Printf.kprintf (fun msg -> raise (Error msg)) fmt
+let error fmt = Printf.ksprintf (fun msg -> raise (Error msg)) fmt
 
 let integer str =
     try int_of_string str
@@ -38,5 +38,3 @@ let main () =
 let () =
     try main () with
     | Roman.Error msg -> Printf.eprintf "%s\n" msg; exit 1
-
-

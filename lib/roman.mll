@@ -13,7 +13,7 @@
     *)
 
     exception Error of string
-    let error fmt = Printf.kprintf (fun msg -> raise (Error msg)) fmt
+    let error fmt = Printf.ksprintf (fun msg -> raise (Error msg)) fmt
 
     type number =
         | Roman     of string
